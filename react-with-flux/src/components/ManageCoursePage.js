@@ -3,6 +3,8 @@ import CourseForm from "./CourseForm";
 import courseStore from "../stores/courseStore";
 import { toast } from "react-toastify";
 import * as courseActions from "../actions/courseActions";
+import { Redirect } from "react-router-dom";
+import NotFoundPage from "./NotFoundPage";
 const ManageCoursePage = (props) => {
   const [errors, setErrors] = useState({});
   const [courses, setCourses] = useState(courseStore.getCourses());
@@ -18,20 +20,11 @@ const ManageCoursePage = (props) => {
     courseStore.addChangeListener(onChange);
     const slug = props.match.params.slug;
     if (courses.length === 0) {
-      debugger;
       courseActions.loadCourses();
     } else if (slug) {
-      debugger;
-      let savedCourse = null;
-      savedCourse = courseStore.getCourseBySlug(slug);
-      debugger;
-      if (!savedCourse) {
-        debugger;
-      } else {
-        setCourse(savedCourse);
-      }
+      setCourse(courseStore.getCourseBySlug(slug));
     }
-    return courseStore.removeChangeListener(onChange);
+    return () => courseStore.removeChangeListener(onChange);
   }, [props.match.params.slug, courses]);
 
   function onChange() {
@@ -65,17 +58,22 @@ const ManageCoursePage = (props) => {
       toast.success("Course Saved");
     });
   };
-  return (
-    <div>
-      <h2>Manage Course</h2>
-      <CourseForm
-        errors={errors}
-        course={course}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-      />
-    </div>
-  );
+
+  if (course) {
+    return (
+      <div>
+        <h2>Manage Course</h2>
+        <CourseForm
+          errors={errors}
+          course={course}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+        />
+      </div>
+    );
+  } else {
+    return <Redirect to="/404" component={NotFoundPage} />;
+  }
 };
 
 export default ManageCoursePage;
