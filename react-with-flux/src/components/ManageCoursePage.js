@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import * as courseActions from "../actions/courseActions";
 import { Redirect } from "react-router-dom";
 import NotFoundPage from "./NotFoundPage";
+import authorStore from "../stores/authorStore";
 const ManageCoursePage = (props) => {
   const [errors, setErrors] = useState({});
   const [courses, setCourses] = useState(courseStore.getCourses());
@@ -21,6 +22,11 @@ const ManageCoursePage = (props) => {
     const slug = props.match.params.slug;
     if (courses.length === 0) {
       courseActions.loadCourses();
+      // setAuthors(
+      //   authorApi.getAuthors().then((authors) => {
+      //     return authors;
+      //   })
+      // );
     } else if (slug) {
       setCourse(courseStore.getCourseBySlug(slug));
     }
@@ -68,6 +74,7 @@ const ManageCoursePage = (props) => {
           course={course}
           onChange={handleChange}
           onSubmit={handleSubmit}
+          authors={authorStore.getAuthors()}
         />
       </div>
     );

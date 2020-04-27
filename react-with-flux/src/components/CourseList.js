@@ -2,13 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+const getAuthorName = (authorId, authors) => {
+  let author = authors.find((author) => author.id === authorId);
+  if (author) {
+    return author.name;
+  }
+};
+
 const CourseList = (props) => {
   return (
     <table className="table">
       <thead>
         <tr>
           <th>Title</th>
-          <th>Authors Id</th>
+          <th>Author</th>
           <th>Category</th>
           <th>Action</th>
         </tr>
@@ -20,7 +27,7 @@ const CourseList = (props) => {
               <td>
                 <Link to={"/course/" + course.slug}>{course.title}</Link>
               </td>
-              <td>{course.authorId}</td>
+              <td>{getAuthorName(course.authorId, props.authors)}</td>
               <td>{course.category}</td>
               <td>
                 <button
